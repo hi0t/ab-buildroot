@@ -1,0 +1,37 @@
+container:
+  image: ubuntu:18.04
+
+env:
+  version: 1.0
+  github_token: ENCRYPTED[c61ae1dde3292c0b91206d9767bb761cc546665cf66f33edf2c97697aa14d323337a84902770e3890c53ca7bfc628779]
+
+task:
+  only_if: $CIRRUS_BRANCH == 'master'
+
+  timeout_in: 90m
+
+  install_apt_script: |
+    apt-get update
+    apt-get -y install wget curl make gcc file g++ patch cpio python unzip rsync bc libdata-dumper-simple-perl libextutils-makemaker-cpanfile-perl libthread-queue-any-perl jq
+  
+  ccache_cache:
+    folder: /tmp/buildroot-ccache
+  
+  build_script: ./build.sh
+
+  publish_script: |
+      file_to_upload="./build/output/images/sdcard.img"
+      file_name=$(basename "$file_to_upload")
+
+      release_id=$(curl --fail -X POST \
+        --data "{\"tag_name\":\"v$version\", \"target_commitish\":\"$CIRRUS_CHANGE_IN_REPO\"}" \
+        --header "Authorization: token $github_token" \
+        --header "Content-Type: application/json" \
+        "https://api.github.com/repos/$CIRRUS_REPO_FULL_NAME/releases" \
+        | jq -r '.id')
+
+      curl --fail -X POST \
+        --data-binary @$file_to_upload \
+        --header "Authorization: token $github_token" \
+        --header "Content-Type: application/octet-stream" \
+        "https://uploads.github.com/repos/$CIRRUS_REPO_FULL_NAME/releases/$release_id/assets?name=$file_name"
