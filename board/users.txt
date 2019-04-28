@@ -1,1 +1,0 @@
-ab -1 ab -1 =ab /home/ab /bin/sh - AlphaBot user

@@ -1,0 +1,3 @@
+# <username>	<uid>	<group>	<gid>	<password>	<home>		<shell>	<groups>	<comment>
+-				-1		gpio	-1		-			-			-		-			-
+ab				-1		ab		-1		=ab			/home/ab	/bin/sh	gpio		AlphaBot user
