@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BUILDROOT_VERSION=2019.02.1
+BUILDROOT_VERSION=2019.02.3
 
 set -e
 CWD=$(dirname $(readlink -f $0))
