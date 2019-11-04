@@ -8,7 +8,7 @@ env:
 task:
   only_if: $CIRRUS_BRANCH == "master"
 
-  timeout_in: 90m
+  timeout_in: 120m
 
   install_apt_script: |
     apt-get update
